@@ -8,103 +8,95 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      background-color: #f0f4f8;
+      background-color: #f7fafd;
       color: #333;
+      margin: 0;
       padding: 20px;
+    }
+    .container {
       max-width: 500px;
-      margin: auto;
+      margin: 0 auto;
+      background: #ffffff;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      border-top: 6px solid #4797e7;
     }
     h1 {
-      color: #0066cc;
-      font-size: 1.8rem;
+      text-align: center;
+      color: #4797e7;
     }
     label {
       display: block;
-      margin-top: 15px;
-      font-weight: bold;
-    }
-    input, select {
-      width: 100%;
-      padding: 8px;
-      margin-top: 5px;
-      border-radius: 4px;
-      border: 1px solid #ccc;
-    }
-    button {
       margin-top: 20px;
-      padding: 10px 15px;
-      background-color: #0066cc;
-      color: #fff;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-    #result {
-      margin-top: 25px;
       font-weight: bold;
-      font-size: 1.2rem;
-      color: #0066cc;
+    }
+    input[type="number"] {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+    .result {
+      margin-top: 20px;
+      padding: 15px;
+      background-color: #e6f0fc;
+      border-left: 4px solid #4797e7;
+      border-radius: 8px;
+    }
+    .footer {
+      margin-top: 30px;
+      font-size: 14px;
+      color: #666;
+      line-height: 1.6;
     }
   </style>
 </head>
 <body>
-  <h1>CLShop Jastip Calculator</h1>
+  <div class="container">
+    <h1>CLShop Jastip Calculator</h1>
+    
+    <label for="basePrice">Masukkan Base Price (Harga Asli):</label>
+    <input type="number" id="basePrice" placeholder="Contoh: 15800" />
 
-  <label for="productType">Product Type:</label>
-  <select id="productType">
-    <option value="Skincare/Makeup">Skincare/Makeup</option>
-    <option value="Footwear with Box">Footwear with Box</option>
-    <option value="Footwear without Box">Footwear without Box</option>
-    <option value="Leather Bag with Box">Leather Bag with Box</option>
-    <option value="Leather Bag without Box">Leather Bag without Box</option>
-    <option value="Nylon Bag with Box">Nylon/Fabric Bag with Box</option>
-    <option value="Nylon Bag without Box">Nylon/Fabric Bag without Box</option>
-    <option value="Kids Footwear with Box">Kids Footwear with Box</option>
-    <option value="Kids Footwear without Box">Kids Footwear without Box</option>
-    <option value="T-Shirt">T-Shirt/Shirt/Tank</option>
-    <option value="Outer">Outer (Jacket/Cardigan)</option>
-    <option value="Jeans">Jeans</option>
-    <option value="Bottom">Bottom (Pants/Skirt)</option>
-    <option value="Food">Food (Snacks/Confectionery)</option>
-  </select>
+    <div class="result" id="calcResult" style="display:none;">
+      <p><strong>Harga Jual Jastip:</strong> <span id="sellingPrice">-</span></p>
+      <p><strong>Harga Jual E-Commerce (fee 11%):</strong> <span id="ecomPrice">-</span></p>
+    </div>
 
-  <label for="weight">Actual Weight (grams):</label>
-  <input type="number" id="weight" placeholder="Enter weight in grams"/>
-
-  <button onclick="calculatePrice()">Calculate</button>
-
-  <div id="result"></div>
+    <div class="footer">
+      <p><strong>Catatan:</strong></p>
+      <ul>
+        <li>Masukkan harga asli produk (bukan harga jastip).</li>
+        <li>Harga jual jastip dan e-commerce dihitung otomatis sesuai rumus di Google Sheet.</li>
+        <li>Harga e-commerce sudah memperhitungkan potongan 11% platform fee.</li>
+        <li>Gunakan hasil ini untuk menentukan harga jual produk kamu.</li>
+      </ul>
+    </div>
+  </div>
 
   <script>
-    function calculatePrice() {
-      const type = document.getElementById('productType').value;
-      const weight = parseFloat(document.getElementById('weight').value);
+    const input = document.getElementById("basePrice");
+    const resultSection = document.getElementById("calcResult");
+    const sellingEl = document.getElementById("sellingPrice");
+    const ecomEl = document.getElementById("ecomPrice");
 
-      let calculatedWeight = 0;
+    input.addEventListener("input", () => {
+      const base = parseFloat(input.value);
+      if (!isNaN(base)) {
+        let sell = base + 25000;
+        let rounded = Math.round(sell / 1000) * 1000;
+        let rounded9000 = Math.floor(rounded / 10000) * 10000 + 9000;
+        let ecom = Math.round(rounded9000 / 0.89 / 1000) * 1000;
 
-      if (type === 'Skincare/Makeup') {
-        calculatedWeight = weight < 10 ? 100 : weight;
-      } else if (type === 'Footwear with Box' || type === 'Leather Bag with Box') {
-        calculatedWeight = 240000;
-      } else if (type === 'Footwear without Box' || type === 'Leather Bag without Box' || type === 'Nylon Bag with Box') {
-        calculatedWeight = 160000;
-      } else if (type === 'Nylon Bag without Box' || type === 'Kids Footwear with Box') {
-        calculatedWeight = 120000;
-      } else if (type === 'Kids Footwear without Box') {
-        calculatedWeight = 120000;
-      } else if (type === 'T-Shirt' || type === 'Bottom') {
-        calculatedWeight = 300;
-      } else if (type === 'Outer' || type === 'Jeans') {
-        calculatedWeight = 800;
-      } else if (type === 'Food') {
-        calculatedWeight = weight < 100 ? 300 : weight;
+        sellingEl.textContent = "Rp " + rounded9000.toLocaleString("id-ID");
+        ecomEl.textContent = "Rp " + ecom.toLocaleString("id-ID");
+        resultSection.style.display = "block";
+      } else {
+        resultSection.style.display = "none";
       }
-
-      let basePrice = calculatedWeight * 60;
-      basePrice = Math.ceil(basePrice / 9000) * 9000;
-
-      document.getElementById('result').innerText = `Harga: Rp${basePrice.toLocaleString('id-ID')}`;
-    }
+    });
   </script>
 </body>
 </html>
