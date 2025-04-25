@@ -2,101 +2,151 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CLShop Jastip Calculator</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background-color: #f7fafd;
+      font-family: sans-serif;
+      background-color: #f4f8fb;
       color: #333;
-      margin: 0;
+      max-width: 600px;
+      margin: 40px auto;
       padding: 20px;
-    }
-    .container {
-      max-width: 500px;
-      margin: 0 auto;
+      border-radius: 12px;
       background: #ffffff;
-      padding: 30px;
-      border-radius: 16px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      border-top: 6px solid #4797e7;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     }
     h1 {
-      text-align: center;
-      color: #4797e7;
+      color: #2176ae;
+      font-size: 24px;
+      margin-bottom: 10px;
     }
     label {
       display: block;
       margin-top: 20px;
       font-weight: bold;
     }
-    input[type="number"] {
+    select, input {
       width: 100%;
       padding: 10px;
       margin-top: 5px;
+      font-size: 16px;
       border: 1px solid #ccc;
       border-radius: 8px;
     }
-    .result {
+    .output {
       margin-top: 20px;
+      background: #e6f0f9;
       padding: 15px;
-      background-color: #e6f0fc;
-      border-left: 4px solid #4797e7;
       border-radius: 8px;
     }
+    .output p {
+      font-weight: bold;
+      font-size: 16px;
+      margin: 10px 0;
+    }
     .footer {
-      margin-top: 30px;
+      margin-top: 40px;
       font-size: 14px;
-      color: #666;
-      line-height: 1.6;
+      color: #555;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>CLShop Jastip Calculator</h1>
-    
-    <label for="basePrice">Masukkan Base Price (Harga Asli):</label>
-    <input type="number" id="basePrice" placeholder="Contoh: 15800" />
+  <h1>CLShop Jastip Calculator</h1>
 
-    <div class="result" id="calcResult" style="display:none;">
-      <p><strong>Harga Jual Jastip:</strong> <span id="sellingPrice">-</span></p>
-      <p><strong>Harga Jual E-Commerce (fee 11%):</strong> <span id="ecomPrice">-</span></p>
-    </div>
+  <label for="number">Product Price:</label>
+  <input type="number" id="basePrice" placeholder="Enter number">
 
-    <div class="footer">
-      <p><strong>Catatan:</strong></p>
-      <ul>
-        <li>Masukkan harga asli produk (bukan harga jastip).</li>
-        <li>Harga jual jastip dan e-commerce dihitung otomatis sesuai rumus di Google Sheet.</li>
-        <li>Harga e-commerce sudah memperhitungkan potongan 11% platform fee.</li>
-        <li>Gunakan hasil ini untuk menentukan harga jual produk kamu.</li>
-      </ul>
-    </div>
+  <label for="category">Product Category:</label>
+  <select id="category">
+    <option value="">-- Select Category --</option>
+    <option value="Footwear with Box (Shoes/Sandal)">Footwear with Box (Shoes/Sandal)</option>
+    <option value="Footwear without Box (Shoes/Sandal)">Footwear without Box (Shoes/Sandal)</option>
+    <option value="Leather Bag with Box">Leather Bag with Box</option>
+    <option value="Leather Bag without Box">Leather Bag without Box</option>
+    <option value="Nylon/Fabric Bag with Box">Nylon/Fabric Bag with Box</option>
+    <option value="Nylon/Fabric Bag without Box">Nylon/Fabric Bag without Box</option>
+    <option value="Kids Footwear with Box (Shoes/Sandal)">Kids Footwear with Box (Shoes/Sandal)</option>
+    <option value="Kids Footwear without Box (Shoes/Sandal)">Kids Footwear without Box (Shoes/Sandal)</option>
+    <option value="Clothing (T-Shirt/Shirt/Tank)">Clothing (T-Shirt/Shirt/Tank)</option>
+    <option value="Outer (Jacket/Cardigan)">Outer (Jacket/Cardigan)</option>
+    <option value="Jeans (Bottom/Outer/Top)">Jeans (Bottom/Outer/Top)</option>
+    <option value="Bottom (Pants/Skirt)">Bottom (Pants/Skirt)</option>
+    <option value="Food">Food</option>
+    <option value="Skincare">Skincare</option>
+    <option value="Makeup">Makeup</option>
+  </select>
+
+  <label for="weight">Product Weight/Netto:</label>
+  <input type="number" id="productWeight" placeholder="Enter weight in grams or ml">
+
+  <div class="output">
+    <p id="sellingPrice">Selling Price: -</p>
+    <p id="ecommercePrice">E-commerce Price: -</p>
   </div>
 
-  <script>
-    const input = document.getElementById("basePrice");
-    const resultSection = document.getElementById("calcResult");
-    const sellingEl = document.getElementById("sellingPrice");
-    const ecomEl = document.getElementById("ecomPrice");
+  <div class="footer">
+    <p>•  Harga final belum termasuk ongkir lokal Korea dari penjual ke gudang (jika ada).<br>
+    • Harga yang tertera tidak bersifat final, setelah pesanan fix, semua harga akan dikalkulasi ulang oleh admin (harga bisa lebih mahal ataupun lebih murah).<br>
+• Untuk produk ringan tapi besar seperti boneka, Popmart, dan sejenisnya yang terkena volume mohon konfirmasi ke WhatsApp atau Instagram untuk kalkulasi manual.<br>
+• Khusus untuk WConcept dan ZigZag, harga mengacu kepada harga yang tertera di keranjang, bukan di halaman produk. Mohon tambahkan produk ke keranjang terlebih dahulu.
+</p>
+  </div>
 
-    input.addEventListener("input", () => {
-      const base = parseFloat(input.value);
-      if (!isNaN(base)) {
-        let sell = base + 25000;
-        let rounded = Math.round(sell / 1000) * 1000;
-        let rounded9000 = Math.floor(rounded / 10000) * 10000 + 9000;
-        let ecom = Math.round(rounded9000 / 0.89 / 1000) * 1000;
+<script>
+  const basePriceInput = document.getElementById("basePrice");
+  const categoryInput = document.getElementById("category");
+  const weightInput = document.getElementById("productWeight");
+  const sellingPriceText = document.getElementById("sellingPrice");
+  const ecommercePriceText = document.getElementById("ecommercePrice");
 
-        sellingEl.textContent = "Rp " + rounded9000.toLocaleString("id-ID");
-        ecomEl.textContent = "Rp " + ecom.toLocaleString("id-ID");
-        resultSection.style.display = "block";
-      } else {
-        resultSection.style.display = "none";
-      }
-    });
-  </script>
-</body>
-</html>
+  function calculate() {
+    const basePrice = parseFloat(basePriceInput.value) || 0;
+    const cat = categoryInput.value;
+    const weight = parseFloat(weightInput.value) || 0;
+
+    let categoryFee = 0;
+
+    if (cat === "Footwear with Box (Shoes/Sandal)" || cat === "Leather Bag with Box") {
+      categoryFee = 240000;
+    } else if (
+      cat === "Footwear without Box (Shoes/Sandal)" ||
+      cat === "Leather Bag without Box" ||
+      cat === "Nylon/Fabric Bag with Box" ||
+      cat === "Kids Footwear with Box (Shoes/Sandal)"
+    ) {
+      categoryFee = 160000;
+    } else if (
+      cat === "Nylon/Fabric Bag without Box" ||
+      cat === "Kids Footwear without Box (Shoes/Sandal)"
+    ) {
+      categoryFee = 120000;
+    } else if (cat === "Clothing (T-Shirt/Shirt/Tank)" || cat === "Bottom (Pants/Skirt)") {
+      categoryFee = 300 / 100 * 24000;
+    } else if (cat === "Outer (Jacket/Cardigan)" || cat === "Jeans (Bottom/Outer/Top)") {
+      categoryFee = 800 / 100 * 24000;
+    } else if (cat === "Food") {
+      categoryFee = ((weight < 100 ? 300 : weight) / 100) * 24000;
+    } else if (cat === "Skincare" || cat === "Makeup") {
+      categoryFee = ((weight < 10 ? 100 : weight) / 100) * 24000;
+    } else {
+      categoryFee = (weight / 100) * 24000;
+    }
+
+    const subtotal = basePrice * 12 + categoryFee;
+    const margin = Math.max(subtotal * 0.15, 35000);
+    const B3 = Math.ceil((subtotal + margin) / 1000) * 1000;
+    const roundedB3 = B3 - (B3 % 10000) + 9000;
+    const sellingPriceRaw = (roundedB3 + 10000) / 0.92;
+    const ecommercePrice = Math.ceil(sellingPriceRaw / 1000) * 1000 - (Math.ceil(sellingPriceRaw / 1000) * 1000 % 10000) + 9000;
+
+    sellingPriceText.textContent = "Final Price: Rp " + roundedB3.toLocaleString("id-ID");
+    ecommercePriceText.textContent = "E-commerce Price: Rp " + ecommercePrice.toLocaleString("id-ID");
+  }
+
+  basePriceInput.addEventListener("input", calculate);
+  categoryInput.addEventListener("change", calculate);
+  weightInput.addEventListener("input", calculate);
+</script>
