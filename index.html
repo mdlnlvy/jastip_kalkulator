@@ -1,0 +1,110 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CLShop Jastip Calculator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f4f8;
+      color: #333;
+      padding: 20px;
+      max-width: 500px;
+      margin: auto;
+    }
+    h1 {
+      color: #0066cc;
+      font-size: 1.8rem;
+    }
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+    input, select {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+    }
+    button {
+      margin-top: 20px;
+      padding: 10px 15px;
+      background-color: #0066cc;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    #result {
+      margin-top: 25px;
+      font-weight: bold;
+      font-size: 1.2rem;
+      color: #0066cc;
+    }
+  </style>
+</head>
+<body>
+  <h1>CLShop Jastip Calculator</h1>
+
+  <label for="productType">Product Type:</label>
+  <select id="productType">
+    <option value="Skincare/Makeup">Skincare/Makeup</option>
+    <option value="Footwear with Box">Footwear with Box</option>
+    <option value="Footwear without Box">Footwear without Box</option>
+    <option value="Leather Bag with Box">Leather Bag with Box</option>
+    <option value="Leather Bag without Box">Leather Bag without Box</option>
+    <option value="Nylon Bag with Box">Nylon/Fabric Bag with Box</option>
+    <option value="Nylon Bag without Box">Nylon/Fabric Bag without Box</option>
+    <option value="Kids Footwear with Box">Kids Footwear with Box</option>
+    <option value="Kids Footwear without Box">Kids Footwear without Box</option>
+    <option value="T-Shirt">T-Shirt/Shirt/Tank</option>
+    <option value="Outer">Outer (Jacket/Cardigan)</option>
+    <option value="Jeans">Jeans</option>
+    <option value="Bottom">Bottom (Pants/Skirt)</option>
+    <option value="Food">Food (Snacks/Confectionery)</option>
+  </select>
+
+  <label for="weight">Actual Weight (grams):</label>
+  <input type="number" id="weight" placeholder="Enter weight in grams"/>
+
+  <button onclick="calculatePrice()">Calculate</button>
+
+  <div id="result"></div>
+
+  <script>
+    function calculatePrice() {
+      const type = document.getElementById('productType').value;
+      const weight = parseFloat(document.getElementById('weight').value);
+
+      let calculatedWeight = 0;
+
+      if (type === 'Skincare/Makeup') {
+        calculatedWeight = weight < 10 ? 100 : weight;
+      } else if (type === 'Footwear with Box' || type === 'Leather Bag with Box') {
+        calculatedWeight = 240000;
+      } else if (type === 'Footwear without Box' || type === 'Leather Bag without Box' || type === 'Nylon Bag with Box') {
+        calculatedWeight = 160000;
+      } else if (type === 'Nylon Bag without Box' || type === 'Kids Footwear with Box') {
+        calculatedWeight = 120000;
+      } else if (type === 'Kids Footwear without Box') {
+        calculatedWeight = 120000;
+      } else if (type === 'T-Shirt' || type === 'Bottom') {
+        calculatedWeight = 300;
+      } else if (type === 'Outer' || type === 'Jeans') {
+        calculatedWeight = 800;
+      } else if (type === 'Food') {
+        calculatedWeight = weight < 100 ? 300 : weight;
+      }
+
+      let basePrice = calculatedWeight * 60;
+      basePrice = Math.ceil(basePrice / 9000) * 9000;
+
+      document.getElementById('result').innerText = `Harga: Rp${basePrice.toLocaleString('id-ID')}`;
+    }
+  </script>
+</body>
+</html>
