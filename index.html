@@ -139,7 +139,7 @@
     const margin = Math.max(subtotal * 0.15, 35000);
     const B3 = Math.ceil((subtotal + margin) / 1000) * 1000;
     const roundedB3 = B3 - (B3 % 10000) + 9000;
-    const sellingPriceRaw = (roundedB3 + 10000) / 0.92;
+    const sellingPriceRaw = (roundedB3 + 10000) / 0.90;
     const ecommercePrice = Math.ceil(sellingPriceRaw / 1000) * 1000 - (Math.ceil(sellingPriceRaw / 1000) * 1000 % 10000) + 9000;
 
     sellingPriceText.textContent = "Final Price: Rp " + roundedB3.toLocaleString("id-ID");
